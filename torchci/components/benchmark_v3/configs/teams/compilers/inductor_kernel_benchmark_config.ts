@@ -10,6 +10,7 @@ import {
 } from "../defaults/default_dashboard_config";
 
 export const BETTER_BENCHMARK_ID = "better_benchmark";
+export const BETTER_BENCHMARK_SUMMARY_FETCHER_ID = "better_benchmark_summary";
 
 const LOWER_IS_BETTER_POLICY: BenchmarkComparisonPolicyConfig = {
   target: "latency_us",
@@ -64,7 +65,16 @@ export const BetterBenchmarkDashboardConfig: BenchmarkUIConfig = {
   },
   dataRender: {
     ...defaultDataRender,
-    renders: (defaultDataRender.renders ?? []).map(withComparisonPolicy),
+    renders: [
+      {
+        type: "AutoBetterBenchmarkSummary",
+        title: "Full performance rollup",
+        config: {
+          fetcherId: BETTER_BENCHMARK_SUMMARY_FETCHER_ID,
+        },
+      },
+      ...(defaultDataRender.renders ?? []).map(withComparisonPolicy),
+    ],
     subSectionRenders: Object.fromEntries(
       (
         Object.entries(defaultDataRender.subSectionRenders ?? {}) as [
